@@ -1,0 +1,971 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Foodie - Online Food Ordering</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        /* Navigation */
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: auto;
+            padding: 18px 30px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff5722;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .nav-links a:hover {
+            color: #ff5722;
+        }
+
+        .cart-btn {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+
+        /* Hero */
+
+        .hero {
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            padding: 60px 10%;
+
+            background: linear-gradient(
+                135deg,
+                #fff3e0,
+                #ffe0b2
+            );
+        }
+
+        .hero-content h1 {
+            font-size: 55px;
+            line-height: 1.2;
+        }
+
+        .hero-content h1 span {
+            color: #ff5722;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            margin: 20px 0;
+            max-width: 550px;
+            line-height: 1.6;
+        }
+
+        .order-btn {
+            display: inline-block;
+            background-color: #ff5722;
+            color: white;
+            padding: 14px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+        }
+
+        .order-btn:hover {
+            background-color: #e64a19;
+        }
+
+
+        /* Search */
+
+        .search-section {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .search-section input {
+            width: 80%;
+            max-width: 600px;
+
+            padding: 15px 20px;
+
+            border: 1px solid #ddd;
+            border-radius: 30px;
+
+            font-size: 16px;
+            outline: none;
+        }
+
+
+        /* Menu */
+
+        .menu-section {
+            padding: 60px 8%;
+            text-align: center;
+        }
+
+        .menu-section h2,
+        .about h2,
+        .contact h2 {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        .section-text {
+            margin-bottom: 40px;
+            color: #777;
+        }
+
+        .food-container {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(250px, 1fr));
+
+            gap: 25px;
+        }
+
+
+        /* Food Card */
+
+        .food-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+
+            box-shadow:
+                0 5px 20px rgba(0,0,0,0.08);
+
+            transition: 0.3s;
+        }
+
+        .food-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .food-image {
+            font-size: 80px;
+            margin-bottom: 15px;
+        }
+
+        .food-card h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .food-card p {
+            color: #777;
+            min-height: 45px;
+            line-height: 1.5;
+        }
+
+        .food-card h4 {
+            color: #ff5722;
+            font-size: 22px;
+            margin: 15px 0;
+        }
+
+        .food-card button {
+            width: 100%;
+            padding: 12px;
+
+            border: none;
+            background-color: #ff5722;
+            color: white;
+
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .food-card button:hover {
+            background-color: #e64a19;
+        }
+
+
+        /* About */
+
+        .about {
+            padding: 70px 15%;
+            text-align: center;
+            background-color: #fff3e0;
+        }
+
+        .about p {
+            max-width: 800px;
+            margin: auto;
+            line-height: 1.8;
+            color: #555;
+        }
+
+
+        /* Contact */
+
+        .contact {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .contact p {
+            margin: 12px;
+        }
+
+
+        /* Cart */
+
+        .cart-modal {
+            display: none;
+
+            position: fixed;
+            z-index: 200;
+
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background-color: rgba(0,0,0,0.6);
+        }
+
+        .cart-box {
+            background-color: white;
+
+            width: 90%;
+            max-width: 500px;
+
+            margin: 80px auto;
+            padding: 30px;
+
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        .cart-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .cart-item button {
+            padding: 6px 10px;
+
+            border: none;
+            background-color: #ff5722;
+            color: white;
+
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            margin-top: 20px;
+
+            padding: 13px;
+
+            background-color: #28a745;
+            color: white;
+
+            border: none;
+            border-radius: 8px;
+
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+
+        /* Footer */
+
+        footer {
+            background-color: #222;
+            color: white;
+
+            text-align: center;
+            padding: 20px;
+        }
+
+
+        /* Mobile */
+
+        @media (max-width: 768px) {
+
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero {
+                padding: 50px 25px;
+            }
+
+            .hero-content h1 {
+                font-size: 40px;
+            }
+
+            .search-section input {
+                width: 95%;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- Navigation -->
+
+    <header>
+
+        <nav class="navbar">
+
+            <div class="logo">
+                🍴 Foodie
+            </div>
+
+            <ul class="nav-links">
+
+                <li>
+                    <a href="#home">Home</a>
+                </li>
+
+                <li>
+                    <a href="#menu">Menu</a>
+                </li>
+
+                <li>
+                    <a href="#about">About</a>
+                </li>
+
+                <li>
+                    <a href="#contact">Contact</a>
+                </li>
+
+            </ul>
+
+            <button class="cart-btn" onclick="showCart()">
+
+                🛒 Cart
+                <span id="cart-count">0</span>
+
+            </button>
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- Home -->
+
+    <section id="home" class="hero">
+
+        <div class="hero-content">
+
+            <h1>
+
+                Delicious Food
+                <br>
+
+                <span>Delivered To You</span>
+
+            </h1>
+
+            <p>
+
+                Order your favourite food online and
+                enjoy delicious meals at your doorstep.
+
+            </p>
+
+            <a href="#menu" class="order-btn">
+
+                Order Now
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- Search -->
+
+    <section class="search-section">
+
+        <input
+            type="text"
+            id="search"
+            placeholder="🔍 Search your favourite food..."
+            onkeyup="searchFood()"
+        >
+
+    </section>
+
+
+
+    <!-- Menu -->
+
+    <section id="menu" class="menu-section">
+
+        <h2>Our Popular Menu</h2>
+
+        <p class="section-text">
+
+            Choose your favourite food and add it to your cart.
+
+        </p>
+
+
+        <div class="food-container">
+
+
+            <!-- Pizza -->
+
+            <div class="food-card">
+
+                <div class="food-image">
+                    🍕
+                </div>
+
+                <h3>Cheese Pizza</h3>
+
+                <p>
+                    Delicious cheese pizza with fresh toppings.
+                </p>
+
+                <h4>₹199</h4>
+
+                <button
+                    onclick="addToCart('Cheese Pizza',199)"
+                >
+                    Add to Cart
+                </button>
+
+            </div>
+
+
+            <!-- Burger -->
+
+            <div class="food-card">
+
+                <div class="food-image">
+                    🍔
+                </div>
+
+                <h3>Chicken Burger</h3>
+
+                <p>
+                    Crispy chicken burger with fresh vegetables.
+                </p>
+
+                <h4>₹149</h4>
+
+                <button
+                    onclick="addToCart('Chicken Burger',149)"
+                >
+                    Add to Cart
+                </button>
+
+            </div>
+
+
+            <!-- Biryani -->
+
+            <div class="food-card">
+
+                <div class="food-image">
+                    🍗
+                </div>
+
+                <h3>Chicken Biryani</h3>
+
+                <p>
+                    Delicious and spicy chicken biryani.
+                </p>
+
+                <h4>₹249</h4>
+
+                <button
+                    onclick="addToCart('Chicken Biryani',249)"
+                >
+                    Add to Cart
+                </button>
+
+            </div>
+
+
+            <!-- Noodles -->
+
+            <div class="food-card">
+
+                <div class="food-image">
+                    🍜
+                </div>
+
+                <h3>Chicken Noodles</h3>
+
+                <p>
+                    Hot and tasty chicken noodles.
+                </p>
+
+                <h4>₹179</h4>
+
+                <button
+                    onclick="addToCart('Chicken Noodles',179)"
+                >
+                    Add to Cart
+                </button>
+
+            </div>
+
+
+            <!-- Fries -->
+
+            <div class="food-card">
+
+                <div class="food-image">
+                    🍟
+                </div>
+
+                <h3>French Fries</h3>
+
+                <p>
+                    Crispy golden french fries.
+                </p>
+
+                <h4>₹99</h4>
+
+                <button
+                    onclick="addToCart('French Fries',99)"
+                >
+                    Add to Cart
+                </button>
+
+            </div>
+
+
+            <!-- Drink -->
+
+            <div class="food-card">
+
+                <div class="food-image">
+                    🥤
+                </div>
+
+                <h3>Cold Drink</h3>
+
+                <p>
+                    Chilled and refreshing cold drink.
+                </p>
+
+                <h4>₹79</h4>
+
+                <button
+                    onclick="addToCart('Cold Drink',79)"
+                >
+                    Add to Cart
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- About -->
+
+    <section id="about" class="about">
+
+        <h2>About Foodie</h2>
+
+        <p>
+
+            Foodie is an online food ordering website
+            designed to make food ordering simple,
+            fast and convenient.
+
+            Customers can browse the menu,
+            add food items to their cart and
+            place an order easily.
+
+        </p>
+
+    </section>
+
+
+
+    <!-- Contact -->
+
+    <section id="contact" class="contact">
+
+        <h2>Contact Us</h2>
+
+        <p>📞 +91 98765 43210</p>
+
+        <p>📧 foodie@example.com</p>
+
+        <p>📍 Chennai, Tamil Nadu</p>
+
+    </section>
+
+
+
+    <!-- Cart Popup -->
+
+    <div id="cart-modal" class="cart-modal">
+
+        <div class="cart-box">
+
+            <span
+                class="close"
+                onclick="closeCart()"
+            >
+                &times;
+            </span>
+
+            <h2>
+                🛒 Your Cart
+            </h2>
+
+            <div id="cart-items"></div>
+
+            <h3>
+
+                Total:
+                ₹<span id="cart-total">0</span>
+
+            </h3>
+
+            <button
+                class="checkout-btn"
+                onclick="checkout()"
+            >
+                Place Order
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Footer -->
+
+    <footer>
+
+        <p>
+            © 2026 Foodie | Online Food Ordering Website
+        </p>
+
+    </footer>
+
+
+
+    <!-- JavaScript -->
+
+    <script>
+
+        let cart = [];
+
+
+        // Add item to cart
+
+        function addToCart(name, price) {
+
+            let existingItem =
+                cart.find(item => item.name === name);
+
+
+            if (existingItem) {
+
+                existingItem.quantity++;
+
+            } else {
+
+                cart.push({
+
+                    name: name,
+                    price: price,
+                    quantity: 1
+
+                });
+
+            }
+
+
+            updateCart();
+
+            alert(name + " added to cart!");
+
+        }
+
+
+
+        // Update cart
+
+        function updateCart() {
+
+            let cartCount = 0;
+
+            let total = 0;
+
+
+            cart.forEach(item => {
+
+                cartCount += item.quantity;
+
+                total += item.price * item.quantity;
+
+            });
+
+
+            document.getElementById("cart-count")
+                .innerText = cartCount;
+
+
+            document.getElementById("cart-total")
+                .innerText = total;
+
+
+            let cartItems =
+                document.getElementById("cart-items");
+
+
+            cartItems.innerHTML = "";
+
+
+            if (cart.length === 0) {
+
+                cartItems.innerHTML =
+                    "<p>Your cart is empty.</p>";
+
+                return;
+
+            }
+
+
+            cart.forEach((item, index) => {
+
+                let div =
+                    document.createElement("div");
+
+
+                div.className = "cart-item";
+
+
+                div.innerHTML = `
+
+                    <span>
+
+                        ${item.name}
+                        <br>
+
+                        ₹${item.price}
+                        × ${item.quantity}
+
+                    </span>
+
+                    <button
+                        onclick="removeItem(${index})"
+                    >
+
+                        Remove
+
+                    </button>
+
+                `;
+
+
+                cartItems.appendChild(div);
+
+            });
+
+        }
+
+
+
+        // Remove item
+
+        function removeItem(index) {
+
+            cart.splice(index, 1);
+
+            updateCart();
+
+        }
+
+
+
+        // Show cart
+
+        function showCart() {
+
+            document.getElementById("cart-modal")
+                .style.display = "block";
+
+            updateCart();
+
+        }
+
+
+
+        // Close cart
+
+        function closeCart() {
+
+            document.getElementById("cart-modal")
+                .style.display = "none";
+
+        }
+
+
+
+        // Checkout
+
+        function checkout() {
+
+            if (cart.length === 0) {
+
+                alert("Your cart is empty!");
+
+                return;
+
+            }
+
+
+            alert(
+                "Order placed successfully! Thank you for ordering from Foodie."
+            );
+
+
+            cart = [];
+
+            updateCart();
+
+            closeCart();
+
+        }
+
+
+
+        // Search food
+
+        function searchFood() {
+
+            let searchValue =
+                document.getElementById("search")
+                .value
+                .toLowerCase();
+
+
+            let cards =
+                document.querySelectorAll(".food-card");
+
+
+            cards.forEach(card => {
+
+                let foodName =
+                    card.querySelector("h3")
+                    .innerText
+                    .toLowerCase();
+
+
+                if (foodName.includes(searchValue)) {
+
+                    card.style.display = "block";
+
+                } else {
+
+                    card.style.display = "none";
+
+                }
+
+            });
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
+```
